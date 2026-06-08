@@ -1,9 +1,11 @@
 import os
 import base64
 import streamlit as st
-from email.mime.text import MIMEText
 import google.generativeai as genai
-genai.configure(api_key = st.secrets["GOOGLE_API_KEY"])
+api_key = st.secrets["GOOGLE_API_KEY"]
+genai.configure(api_key=api_key)
+st.title("Nexara Finance - Centro de Control AI 24/7")
+st.write("Configuración cargada correctamente.")
 # Configuración visual de Streamlit con la paleta Nexara Finance (Gama de azules y blancos)
 st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
 
