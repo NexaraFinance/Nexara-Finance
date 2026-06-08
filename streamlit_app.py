@@ -2,7 +2,7 @@ import os
 import base64
 import streamlit as st
 from email.mime.text import MIMEText
-from google import genai
+import google.generativeai as genai
 from google.genai import types
 # Integración oficial de la API de Gmail de Google
 from google.auth.transport.requests import Request
