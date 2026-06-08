@@ -1,10 +1,10 @@
 import streamlit as st
 import google.generativeai as genai
-# Configuración única
+st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
 api_key = st.secrets["GOOGLE_API_KEY"]
 genai.configure(api_key=api_key)
 st.title("Nexara Finance - Centro de Control AI 24/7")
-st.write("Configuración cargada correctamente.")
+st.write(""Usuario Activo: Gestión Granados | Estrategia Corporativa Automatizada")
 # Configuración visual de Streamlit con la paleta Nexara Finance (Gama de azules y blancos)
 st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
 
