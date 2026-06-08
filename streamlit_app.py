@@ -3,7 +3,7 @@ import google.generativeai as genai
 
 # Configuración de página (solo debe aparecer una vez)
 st.set_page_config(page_title="Nexara Finance OS", layout="wide")
-
+genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 # Configuración de la API usando st.secrets
     st.title("Nexara Finance - Centro de Control AI 24/7")
     st.write("Usuario Activo: Gestión Granados | Estrategia Corporativa Automatizada")
