@@ -3,7 +3,6 @@ import base64
 import streamlit as st
 from email.mime.text import MIMEText
 import google.generativeai as genai
-os.environ["GEMINI_API_KEY"] = "Fk4N2mT4"
 genai.configure(api_key = st.secrets["GOOGLE_API_KEY"])
 # Configuración visual de Streamlit con la paleta Nexara Finance (Gama de azules y blancos)
 st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
