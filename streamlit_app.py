@@ -1,5 +1,3 @@
-import os
-import base64
 import streamlit as st
 import google.generativeai as genai
 # Configuración única
