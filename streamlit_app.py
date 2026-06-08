@@ -1,12 +1,16 @@
 import streamlit as st
 import google.generativeai as genai
-st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
-api_key = st.secrets["GOOGLE_API_KEY"]
-genai.configure(api_key=api_key)
-st.title("Nexara Finance - Centro de Control AI 24/7")
-st.write(""Usuario Activo: Gestión Granados | Estrategia Corporativa Automatizada")
-# Configuración visual de Streamlit con la paleta Nexara Finance (Gama de azules y blancos)
-st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
+
+# Configuración de página (solo debe aparecer una vez)
+st.set_page_config(page_title="Nexara Finance OS", layout="wide")
+
+# Configuración de la API usando st.secrets
+if "GOOGLE_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    st.title("Nexara Finance - Centro de Control AI 24/7")
+    st.write("Usuario Activo: Gestión Granados | Estrategia Corporativa Automatizada")
+else:
+    st.error("Error: La clave GOOGLE_API_KEY no se encuentra en los secretos.")
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
 NEXARA_CONTEXT = """
