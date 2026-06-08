@@ -2,8 +2,12 @@ import os
 import base64
 import streamlit as st
 import google.generativeai as genai
-api_key = st.secrets["GOOGLE_API_KEY"]
-genai.configure(api_key=api_key)
+try:
+     api_key = st.secrets["GOOGLE_API_KEY"]
+     genai.configure(api_key=api_key)
+     st.success("Configuración cargada correctamente.")
+except Exception as e:
+    st.error(f"Error al cargar la clave: {e}")
 st.title("Nexara Finance - Centro de Control AI 24/7")
 st.write("Configuración cargada correctamente.")
 # Configuración visual de Streamlit con la paleta Nexara Finance (Gama de azules y blancos)
