@@ -3,12 +3,6 @@ import base64
 import streamlit as st
 from email.mime.text import MIMEText
 import google.generativeai as genai
-from google.genai import types
-# Integración oficial de la API de Gmail de Google
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
 os.environ["GEMINI_API_KEY"] = "Fk4N2mT4"
 client = genai.Client(api_key="Fk4N2mT4")
 # Configuración visual de Streamlit con la paleta Nexara Finance (Gama de azules y blancos)
