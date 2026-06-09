@@ -14,15 +14,16 @@ from googleapiclient.discovery import build
 # Configuración visual de Streamlit con la paleta Nexara Finance
 st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
 
-# --- CONEXIÓN AUTOMÁTICA CON LA API DE GEMINI DESDE SECRETOS ---
+# --- CONEXIÓN AUTOMÁTICA Y SEGURA CON LA API DE GEMINI ---
+# Validamos e inyectamos la clave guardada en los secretos de Streamlit al entorno del sistema
 if "GOOGLE_API_KEY" in st.secrets:
     os.environ["GEMINI_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 
 try:
-    # Inicialización limpia nativa recomendada por Google
+    # Inicialización estándar oficial recomendada por Google (hereda automáticamente GEMINI_API_KEY)
     client = genai.Client()
 except Exception as e:
-    st.error(f"Error al conectar con el servidor de IA de Google: {e}")
+    st.error(f"Error crítico al conectar con el servidor de IA de Google: {e}")
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
 NEXARA_CONTEXT = "Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes). Directora Fundadora: Luz Dalia Granados Diaz. Servicios principales: Plan A: Avanzado AI-Driven (450 euros/mes) que incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario. Plan B: Rescate Financiero (Pago único + 450 euros/mes) para regularizar empresas con retrasos contables o impositivos. Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía. Vincula las soluciones a resultados concretos. Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5)."
@@ -128,14 +129,14 @@ with tab2:
 # TAB 3: ORGANIZACIÓN DE REUNIONES
 with tab3:
     st.subheader("Minutas de Reuniones y Planificación Automatizada")
-    notes_caoticas = st.text_area("Pega aquí tus notas rápidas tomadas durante una reunión o llamada de diagnóstico:", key="input_notas_reunion")
+    notas_caoticas = st.text_area("Pega aquí tus notas rápidas tomadas durante una reunión o llamada de diagnóstico:", key="input_notas_reunion")
     
     if st.button("Procesar Acta de Reunión", key="btn_procesar_acta"):
         if notas_caoticas:
             with st.spinner("Estructurando puntos de acción..."):
                 response_meet = client.models.generate_content(
                     model='gemini-1.5-flash',
-                    contents=f"Transforma estas notas en un acta formal de Nexara Finance: {notes_caoticas}",
+                    contents=f"Transforma estas notas en un acta formal de Nexara Finance: {notas_caoticas}",
                     config=types.GenerateContentConfig(
                         system_instruction=NEXARA_CONTEXT + " Organiza la salida exactamente en: 1. Puntos Clave Analizados, 2. Decisiones de Control Financiero Tomadas, 3. Tareas Pendientes con Responsables Asignados.",
                         temperature=0.2
