@@ -14,12 +14,9 @@ from googleapiclient.discovery import build
 # Configuración visual de Streamlit con la paleta Nexara Finance
 st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
 
-# --- CONEXIÓN AUTOMÁTICA CON LA API DE GEMINI ---
-# Buscamos la clave guardada de forma segura en los secretos de la plataforma
+# --- CONEXIÓN AUTOMÁTICA CON LA API DE GEMINI DESDE SECRETOS ---
 if "GOOGLE_API_KEY" in st.secrets:
     os.environ["GEMINI_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
-elif "gemini_api_key" in st.secrets:
-    os.environ["GEMINI_API_KEY"] = st.secrets["gemini_api_key"]
 
 try:
     # Inicialización limpia nativa recomendada por Google
@@ -28,7 +25,7 @@ except Exception as e:
     st.error(f"Error al conectar con el servidor de IA de Google: {e}")
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
-NEXARA_CONTEXT = "Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes). Directora Fundadora: Luz Dalia Granados Diaz. Servicios principales: Plan A: Avanzado AI-Driven (450 euros/mes) que incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario. Plan B: Reskate Financiero (Pago único + 450 euros/mes) para regularizar empresas con retrasos contables o impositivos. Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía. Vincula las soluciones a resultados concretos. Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5)."
+NEXARA_CONTEXT = "Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes). Directora Fundadora: Luz Dalia Granados Diaz. Servicios principales: Plan A: Avanzado AI-Driven (450 euros/mes) que incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario. Plan B: Rescate Financiero (Pago único + 450 euros/mes) para regularizar empresas con retrasos contables o impositivos. Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía. Vincula las soluciones a resultados concretos. Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5)."
 
 # --- AUTENTICACIÓN Y MÓDULO GOOGLE GMAIL ---
 SCOPES = ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.readonly']
@@ -65,7 +62,7 @@ def enviar_correo_real(destinatario: str, asunto: str, cuerpo: str):
         return f"❌ Fallo al enviar el correo a través de la API: {e}"
 
 # --- INTERFAZ DEL DASHBOARD OPERATIVO ---
-st.markdown("<h1 style='color: #185FA5; font-family: Sora, sans-serif;'>Nexara Finance · Centro de Control   IA 24/7</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color: #185FA5; font-family: Sora, sans-serif;'>Nexara Finance · Centro de Control AI 24/7</h1>", unsafe_allow_html=True)
 st.write("**Usuario Activo:** Gestión Granados | **Estrategia Corporativa Automatizada**")
 
 tab1, tab2, tab3 = st.tabs(["📩 Gestión de Correos Inteligente", "📈 Factoría de Marketing Nexara", "📅 Planificador de Reuniones"])
@@ -138,7 +135,7 @@ with tab3:
             with st.spinner("Estructurando puntos de acción..."):
                 response_meet = client.models.generate_content(
                     model='gemini-1.5-flash',
-                    contents=f"Transforma estas notas en un acta formal de Nexara Finance: {notas_caoticas}",
+                    contents=f"Transforma estas notas en un acta formal de Nexara Finance: {notes_caoticas}",
                     config=types.GenerateContentConfig(
                         system_instruction=NEXARA_CONTEXT + " Organiza la salida exactamente en: 1. Puntos Clave Analizados, 2. Decisiones de Control Financiero Tomadas, 3. Tareas Pendientes con Responsables Asignados.",
                         temperature=0.2
