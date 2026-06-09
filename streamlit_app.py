@@ -1,4 +1,4 @@
-mport streamlit as st
+import streamlit as st
 import google.generativeai as genai
 
 # Configuración de página (solo debe aparecer una vez)
