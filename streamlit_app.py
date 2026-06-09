@@ -1,4 +1,4 @@
-import streamlit as st
+mport streamlit as st
 import google.generativeai as genai
 
 # Configuración de página (solo debe aparecer una vez)
@@ -17,7 +17,7 @@ else:
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
 NEXARA_CONTEXT = """
 Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
-"""Directora Fundadora: Luz Dalia Granados Diaz.
+"""
 Servicios principales: 
 - Plan A: Avanzado AI-Driven (450€/mes). Incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario.
 - Plan B: Rescate Financiero (Pago único + 450€/mes) para regularizar empresas con retrasos contables o impositivos.
