@@ -48,7 +48,7 @@ def obtener_servicio_gmail():
     return build('gmail', 'v1', credentials=creds)
 
 def enviar_correo_real(destinatario: str, asunto: str, cuerpo: str) -> str:
-    """Función de ejecución real: Envía un correo electrónico usando Gmail API."""
+   # Función de ejecución real: Envía un correo electrónico usando Gmail API.
     try:
         service = obtener_servicio_gmail()
         if not service:
