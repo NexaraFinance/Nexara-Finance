@@ -14,21 +14,21 @@ from googleapiclient.discovery import build
 # Configuración visual de Streamlit con la paleta Nexara Finance
 st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
 
-# --- CONFIGURACIÓN DE SEGURIDAD DE API KEY ---
+# --- CONEXIÓN AUTOMÁTICA CON LA API DE GEMINI ---
+# Buscamos la clave guardada de forma segura en los secretos de la plataforma
 if "GOOGLE_API_KEY" in st.secrets:
-    GEMINI_KEY = st.secrets["GOOGLE_API_KEY"]
-else:
-    GEMINI_KEY = "Fk4N2mT4"
-
-os.environ["GEMINI_API_KEY"] = GEMINI_KEY
+    os.environ["GEMINI_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+elif "gemini_api_key" in st.secrets:
+    os.environ["GEMINI_API_KEY"] = st.secrets["gemini_api_key"]
 
 try:
-    client = genai.Client(api_key=GEMINI_KEY)
+    # Inicialización limpia nativa recomendada por Google
+    client = genai.Client()
 except Exception as e:
-    st.error(f"Error de inicialización en cliente: {e}")
+    st.error(f"Error al conectar con el servidor de IA de Google: {e}")
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
-NEXARA_CONTEXT = "Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes). Directora Fundadora: Luz Dalia Granados Diaz. Servicios principales: Plan A: Avanzado AI-Driven (450 euros/mes) que incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario. Plan B: Rescate Financiero (Pago único + 450 euros/mes) para regularizar empresas con retrasos contables o impositivos. Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía. Vincula las soluciones a resultados concretos. Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5)."
+NEXARA_CONTEXT = "Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes). Directora Fundadora: Luz Dalia Granados Diaz. Servicios principales: Plan A: Avanzado AI-Driven (450 euros/mes) que incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario. Plan B: Reskate Financiero (Pago único + 450 euros/mes) para regularizar empresas con retrasos contables o impositivos. Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía. Vincula las soluciones a resultados concretos. Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5)."
 
 # --- AUTENTICACIÓN Y MÓDULO GOOGLE GMAIL ---
 SCOPES = ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.readonly']
@@ -105,7 +105,7 @@ with tab1:
                 else:
                     st.warning("Por favor, introduce un correo de destino válido.")
 
-# TAB 2: DASHBOARD DE MARKETING PULIDO
+# TAB 2: DASHBOARD DE MARKETING
 with tab2:
     st.subheader("Generador Estratégico de Contenido (Manual de Marca V2025)")
     st.info("Recordatorio de marca: Usar tipografía Sora para títulos, Inter para bloques informativos. Enfoque 100% en dolores del emprendedor.")
@@ -131,7 +131,7 @@ with tab2:
 # TAB 3: ORGANIZACIÓN DE REUNIONES
 with tab3:
     st.subheader("Minutas de Reuniones y Planificación Automatizada")
-    notas_caoticas = st.text_area("Pega aquí tus notas rápidas tomadas durante una reunión o llamada de diagnóstico:", key="input_notas_reunion")
+    notes_caoticas = st.text_area("Pega aquí tus notas rápidas tomadas durante una reunión o llamada de diagnóstico:", key="input_notas_reunion")
     
     if st.button("Procesar Acta de Reunión", key="btn_procesar_acta"):
         if notas_caoticas:
