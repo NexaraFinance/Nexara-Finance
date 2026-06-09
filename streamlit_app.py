@@ -30,7 +30,7 @@ NEXARA_CONTEXT = (
 SCOPES = ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.readonly']
 
 def obtener_servicio_gmail():
-    """Autentica al usuario mediante OAuth 2.0 y mantiene la sesión abierta 24/7 con token.json"""
+    #Autentica al usuario mediante OAuth 2.0 y mantiene la sesión abierta 24/7 con token.json
     creds = None
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
