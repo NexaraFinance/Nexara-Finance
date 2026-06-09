@@ -1,33 +1,24 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Configuración de página (solo debe aparecer una vez)
+# Configuración de página (SIEMPRE debe ser la primera instrucción de Streamlit)
 st.set_page_config(page_title="Nexara Finance OS", layout="wide")
 
 # Validación y Configuración de la API usando st.secrets
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-    
     st.title("Nexara Finance - Centro de Control AI 24/7")
     st.write("Usuario Activo: Gestión Granados | Estrategia Corporativa Automatizada")
 else:
     st.error("Error: La clave GOOGLE_API_KEY no se encuentra en los secretos.")
-    st.stop() # Detiene la ejecución si no hay API Key
+    st.stop()
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
-NEXARA_CONTEXT = """Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
+NEXARA_CONTEXT = """
+Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
 
 Nuestros servicios:
 - Plan A: Avanzado AI-Driven (450 EUR/mes). Incluye Consultoria de Viabilidad, Auditoria Preventiva AI, Control de Tesoreria (Cashflow) y Pool Bancario."""
-    "Auditoria Preventiva AI, Control de Tesoreria (Cashflow) y Pool Bancario.\n"
-    "- Plan B: Premium OS (950 EUR/mes). Incluye todo lo anterior, mas Control de Gestion Mensual, "
-    "Presupuestacion Anual y Optimizacion de Costes Estructurales."
-
-# --- AUTENTICACIÓN Y MÓDULO GOOGLE GMAIL ---
-SCOPES = ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.readonly']
-
-def obtener_servicio_gmail():
-    #Autentica al usuario mediante OAuth 2.0 y mantiene la sesión abierta 24/7 con token.json
     creds = None
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
