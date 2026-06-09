@@ -16,14 +16,15 @@ else:
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
 """NEXARA_CONTEXT =
-Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
-"""
-Servicios principales: 
-- Plan A: Avanzado AI-Driven (450€/mes). Incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario.
-- Plan B: Rescate Financiero (Pago único + 450€/mes) para regularizar empresas con retrasos contables o impositivos.
-Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía ("añadir valor"). Vincula las soluciones a resultados concretos (ej: aumentar rentabilidad, controlar el cashflow).
-Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5).
-"""
+NEXARA_CONTEXT = (
+    "Eres el Asistente Ejecutivo Central de Nexara Finance "
+    "(Dirección Financiera Inteligente para Pymes).\n\n"
+    "Nuestros servicios:\n"
+    "- Plan A: Avanzado AI-Driven (450 EUR/mes). Incluye Consultoria de Viabilidad, "
+    "Auditoria Preventiva AI, Control de Tesoreria (Cashflow) y Pool Bancario.\n"
+    "- Plan B: Premium OS (950 EUR/mes). Incluye todo lo anterior, mas Control de Gestion Mensual, "
+    "Presupuestacion Anual y Optimizacion de Costes Estructurales."
+)
 
 # --- AUTENTICACIÓN Y MÓDULO GOOGLE GMAIL ---
 SCOPES = ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.readonly']
