@@ -1,24 +1,35 @@
+import os
+import base64
 import streamlit as st
-import google.generativeai as genai
-
-# Configuración de página (SIEMPRE debe ser la primera instrucción de Streamlit)
-st.set_page_config(page_title="Nexara Finance OS", layout="wide")
-
-# Validación y Configuración de la API usando st.secrets
-if "GOOGLE_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-    st.title("Nexara Finance - Centro de Control AI 24/7")
-    st.write("Usuario Activo: Gestión Granados | Estrategia Corporativa Automatizada")
-else:
-    st.error("Error: La clave GOOGLE_API_KEY no se encuentra en los secretos.")
-    st.stop()
+from email.mime.text import MIMEText
+from google import genai
+from google.genai import types
+# Integración oficial de la API de Gmail de Google
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+os.environ["GEMINI_API_KEY"] = "Fk4N2mT4"
+client = genai.Client(api_key="Fk4N2mT4")
+# Configuración visual de Streamlit con la paleta Nexara Finance (Gama de azules y blancos)
+st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
 NEXARA_CONTEXT = """
 Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
+Directora Fundadora: Luz Dalia Granados Diaz.
+Servicios principales: 
+- Plan A: Avanzado AI-Driven (450€/mes). Incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario.
+- Plan B: Rescate Financiero (Pago único + 450€/mes) para regularizar empresas con retrasos contables o impositivos.
+Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía ("añadir valor"). Vincula las soluciones a resultados concretos (ej: aumentar rentabilidad, controlar el cashflow).
+Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5).
+"""
 
-Nuestros servicios:
-- Plan A: Avanzado AI-Driven (450 EUR/mes). Incluye Consultoria de Viabilidad, Auditoria Preventiva AI, Control de Tesoreria (Cashflow) y Pool Bancario."""
+# --- AUTENTICACIÓN Y MÓDULO GOOGLE GMAIL ---
+SCOPES = ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.readonly']
+
+def obtener_servicio_gmail():
+    """Autentica al usuario mediante OAuth 2.0 y mantiene la sesión abierta 24/7 con token.json"""
     creds = None
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
@@ -36,7 +47,7 @@ Nuestros servicios:
     return build('gmail', 'v1', credentials=creds)
 
 def enviar_correo_real(destinatario: str, asunto: str, cuerpo: str) -> str:
-   # Función de ejecución real: Envía un correo electrónico usando Gmail API.
+    """Función de ejecución real: Envía un correo electrónico usando Gmail API."""
     try:
         service = obtener_servicio_gmail()
         if not service:
