@@ -15,12 +15,12 @@ else:
     st.stop() # Detiene la ejecución si no hay API Key
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
-"""NEXARA_CONTEXT =
-NEXARA_CONTEXT = (
-    "Eres el Asistente Ejecutivo Central de Nexara Finance "
-    "(Dirección Financiera Inteligente para Pymes).\n\n"
-    "Nuestros servicios:\n"
-    "- Plan A: Avanzado AI-Driven (450 EUR/mes). Incluye Consultoria de Viabilidad, "
+NEXARA_CONTEXT = """
+Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
+
+Nuestros servicios:
+- Plan A: Avanzado AI-Driven (450 EUR/mes). Incluye Consultoria de Viabilidad, Auditoria Preventiva AI, Control de Tesoreria (Cashflow) y Pool Bancario.
+"""
     "Auditoria Preventiva AI, Control de Tesoreria (Cashflow) y Pool Bancario.\n"
     "- Plan B: Premium OS (950 EUR/mes). Incluye todo lo anterior, mas Control de Gestion Mensual, "
     "Presupuestacion Anual y Optimizacion de Costes Estructurales."
