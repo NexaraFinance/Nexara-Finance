@@ -24,7 +24,6 @@ Nuestros servicios:
     "Auditoria Preventiva AI, Control de Tesoreria (Cashflow) y Pool Bancario.\n"
     "- Plan B: Premium OS (950 EUR/mes). Incluye todo lo anterior, mas Control de Gestion Mensual, "
     "Presupuestacion Anual y Optimizacion de Costes Estructurales."
-)
 
 # --- AUTENTICACIÓN Y MÓDULO GOOGLE GMAIL ---
 SCOPES = ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.readonly']
