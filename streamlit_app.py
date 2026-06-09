@@ -12,7 +12,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 # Configuración visual de Streamlit con la paleta Nexara Finance
-st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
+st.set_page_config(page_title="Nexara Finance OS - Centro de Control IA", layout="wide")
 
 # --- CONEXIÓN AUTOMÁTICA Y SEGURA CON LA API DE GEMINI ---
 # Extraemos la clave oculta de los secretos de Streamlit para que GitHub no bloquee el archivo
@@ -65,7 +65,7 @@ def enviar_correo_real(destinatario: str, asunto: str, cuerpo: str):
         return f"❌ Fallo al enviar el correo a través de la API: {e}"
 
 # --- INTERFAZ DEL DASHBOARD OPERATIVO ---
-st.markdown("<h1 style='color: #185FA5; font-family: Sora, sans-serif;'>Nexara Finance · Centro de Control AI 24/7</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color: #185FA5; font-family: Sora, sans-serif;'>Nexara Finance · Centro de Control IA 24/7</h1>", unsafe_allow_html=True)
 st.write("**Usuario Activo:** Gestión Granados | **Estrategia Corporativa Automatizada**")
 
 tab1, tab2, tab3 = st.tabs(["📩 Gestión de Correos Inteligente", "📈 Factoría de Marketing Nexara", "📅 Planificador de Reuniones"])
