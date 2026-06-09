@@ -15,7 +15,7 @@ else:
     st.stop() # Detiene la ejecución si no hay API Key
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
-NEXARA_CONTEXT = """
+"""NEXARA_CONTEXT =
 Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
 """
 Servicios principales: 
