@@ -3,17 +3,21 @@ import google.generativeai as genai
 
 # Configuración de página (solo debe aparecer una vez)
 st.set_page_config(page_title="Nexara Finance OS", layout="wide")
-genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-# Configuración de la API usando st.secrets
+
+# Validación y Configuración de la API usando st.secrets
+if "GOOGLE_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    
     st.title("Nexara Finance - Centro de Control AI 24/7")
     st.write("Usuario Activo: Gestión Granados | Estrategia Corporativa Automatizada")
 else:
     st.error("Error: La clave GOOGLE_API_KEY no se encuentra en los secretos.")
+    st.stop() # Detiene la ejecución si no hay API Key
 
 # --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
 NEXARA_CONTEXT = """
 Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
-Directora Fundadora: Luz Dalia Granados Diaz.
+"""Directora Fundadora: Luz Dalia Granados Diaz.
 Servicios principales: 
 - Plan A: Avanzado AI-Driven (450€/mes). Incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario.
 - Plan B: Rescate Financiero (Pago único + 450€/mes) para regularizar empresas con retrasos contables o impositivos.
