@@ -12,7 +12,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 # Configuración visual de Streamlit con la paleta Nexara Finance
-st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
+st.set_page_config(page_title="Nexara Finance OS - Centro de Control IA", layout="wide")
 
 # --- CONFIGURACIÓN DE SEGURIDAD DE API KEY ---
 if "GOOGLE_API_KEY" in st.secrets:
