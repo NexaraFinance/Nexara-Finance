@@ -2,8 +2,7 @@ import os
 import base64
 import streamlit as st
 from email.mime.text import MIMEText
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 
 # Integración oficial de la API de Gmail de Google
 from google.auth.transport.requests import Request
@@ -14,38 +13,29 @@ from googleapiclient.discovery import build
 # Configuración visual de Streamlit con la paleta Nexara Finance
 st.set_page_config(page_title="Nexara Finance OS - Centro de Control AI", layout="wide")
 
-# --- CONFIGURACIÓN DE SEGURIDAD DE API KEY ---
+# --- CONTEXTO CORPORATIVO (Optimizado para evitar errores de codificación) ---
+NEXARA_CONTEXT = (
+    "Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes). "
+    "Directora Fundadora: Luz Dalia Granados Diaz. "
+    "Servicios principales: "
+    "Plan A: Avanzado AI-Driven (450 euros/mes). Incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario. "
+    "Plan B: Rescate Financiero (Pago único + 450 euros/mes) para regularizar empresas con retrasos contables o impositivos. "
+    "Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía. Vincula las soluciones a resultados concretos. "
+    "Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5)."
+)
+
+# --- CONFIGURACIÓN DE LA API KEY ---
 if "GOOGLE_API_KEY" in st.secrets:
     GEMINI_KEY = st.secrets["GOOGLE_API_KEY"]
 else:
-    GEMINI_KEY = "Fk4N2mT4"
+    GEMINI_KEY = "Fk4N2mT4"  # Tu clave por defecto
 
-os.environ["GEMINI_API_KEY"] = GEMINI_KEY
-
-# Inicialización correcta del cliente según la nueva SDK oficial
-try:
-    client = genai.Client(api_key=GEMINI_KEY)
-except Exception as e:
-    st.error(f"Error al inicializar el cliente de Gemini: {e}")
-
-# --- CONTEXTO CORPORATIVO DE NEXARA FINANCE ---
-NEXARA_CONTEXT = """
-Eres el Asistente Ejecutivo Central de Nexara Finance (Dirección Financiera Inteligente para Pymes).
-Directora Fundadora: Luz Dalia Granados Diaz.
-
-Servicios principales: 
-- Plan A: Avanzado AI-Driven (450€/mes). Incluye Consultoría de Viabilidad, Auditoría Preventiva AI, Control de Tesorería (Cashflow) y Pool Bancario.
-- Plan B: Rescate Financiero (Pago único + 450€/mes) para regularizar empresas con retrasos contables o impositivos.
-
-Tono de voz: Empático, riguroso, directo, resolutivo. Nunca uses jerga corporativa vacía ("añadir valor"). Vincula las soluciones a resultados concretos (ej: aumentar rentabilidad, controlar el cashflow).
-Reglas de diseño de marca: El color verde solo se usa para métricas de datos positivos o CTAs fuertes. El color principal es el azul corporativo (#185FA5).
-"""
+genai.configure(api_key=GEMINI_KEY)
 
 # --- AUTENTICACIÓN Y MÓDULO GOOGLE GMAIL ---
 SCOPES = ['https://www.googleapis.com/auth/gmail.send', 'https://www.googleapis.com/auth/gmail.readonly']
 
 def obtener_servicio_gmail():
-    """Autentica al usuario mediante OAuth 2.0 y mantiene la sesión abierta 24/7 con token.json"""
     creds = None
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
@@ -54,7 +44,7 @@ def obtener_servicio_gmail():
             creds.refresh(Request())
         else:
             if not os.path.exists('credentials.json'):
-                st.error("Por favor, coloca tu archivo 'credentials.json' descargado de Google Cloud Console en la raíz del proyecto.")
+                st.error("Por favor, coloca tu archivo 'credentials.json' en la raíz del proyecto.")
                 return None
             flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
@@ -63,26 +53,22 @@ def obtener_servicio_gmail():
     return build('gmail', 'v1', credentials=creds)
 
 def enviar_correo_real(destinatario: str, asunto: str, cuerpo: str) -> str:
-    """Función de ejecución real: Envía un correo electrónico usando Gmail API."""
     try:
         service = obtener_servicio_gmail()
         if not service:
             return "Error de autenticación con Gmail."
-        
         mensaje = MIMEText(cuerpo)
         mensaje['to'] = destinatario
         mensaje['subject'] = asunto
         raw_message = base64.urlsafe_b64encode(mensaje.as_bytes()).decode('utf-8')
-        
         service.users().messages().send(userId='me', body={'raw': raw_message}).execute()
-        return f"✅ ¡Correo enviado con éxito a {destinatario}!"
+        return f"Corrientemente enviado a {destinatario}"
     except Exception as e:
-        return f"❌ Fallo al enviar el correo a través de la API: {e}"
+        return f"Error al enviar: {e}"
 
-
-# --- INTERFAZ DEL DASHBOARD OPERATIVO ---
+# --- INTERFAZ DEL DASHBOARD ---
 st.markdown("<h1 style='color: #185FA5; font-family: Sora, sans-serif;'>Nexara Finance · Centro de Control AI 24/7</h1>", unsafe_allow_html=True)
-st.write(f"**Usuario Activo:** Gestión Granados | **Estrategia Corporativa Automatizada**")
+st.write("**Usuario Activo:** Gestión Granados | **Estrategia Corporativa Automatizada**")
 
 tab1, tab2, tab3 = st.tabs(["📩 Gestión de Correos Inteligente", "📈 Factoría de Marketing Nexara", "📅 Planificador de Reuniones"])
 
@@ -92,85 +78,60 @@ with tab1:
     col_em1, col_em2 = st.columns(2)
     
     with col_em1:
-        destinatario = st.text_input("Para (Email del Cliente):", placeholder="cliente@pyme.com", key="dest_input")
-        instrucciones_correo = st.text_area(
-            "¿Qué quieres comunicarle al cliente?", 
-            placeholder="Ej: Recordarle al cliente del Plan B que necesitamos los extractos bancarios de marzo...",
-            key="inst_input"
-        )
+        destinatario = st.text_input("Para (Email del Cliente):", placeholder="cliente@pyme.com", key="mail_dest")
+        instrucciones_correo = st.text_area("¿Qué quieres comunicarle al cliente?", placeholder="Ej: Recordarle los extractos...", key="mail_inst")
         
-        if st.button("Generar Borrador con Gemini"):
+        if st.button("Generar Borrador con Gemini", key="btn_gen_mail"):
             if instrucciones_correo:
-                with st.spinner("Gemini procesando tono y contexto de marca..."):
-                    # Corrección de la llamada oficial de la SDK nueva
-                    response = client.models.generate_content(
-                        model='gemini-2.5-flash',
-                        contents=f"Redacta un correo basado en esto: {instrucciones_correo}. Recuerda el tono Nexara.",
-                        config=types.GenerateContentConfig(
-                            system_instruction=NEXARA_CONTEXT,
-                            temperature=0.3
-                        )
+                with st.spinner("Procesando..."):
+                    model = genai.GenerativeModel(
+                        model_name='gemini-1.5-flash',
+                        system_instruction=NEXARA_CONTEXT
                     )
+                    response = model.generate_content(f"Redacta un correo directo basado en esto: {instrucciones_correo}")
                     st.session_state['borrador_correo'] = response.text
                 
     with col_em2:
         if 'borrador_correo' in st.session_state:
-            st.markdown("**Remitente Oficial:** gestiongranados@gmail.com | +34 915 985 222")
-            cuerpo_editado = st.text_area(
-                "Borrador editable para enviar:", 
-                value=st.session_state['borrador_correo'], 
-                height=250,
-                key="cuerpo_edit_input"
-            )
-            asunto_mail = st.text_input("Línea de Asunto:", value="Actualización Urgente - Nexara Finance", key="asunto_input")
+            st.markdown("**Remitente:** gestiongranados@gmail.com")
+            cuerpo_editado = st.text_area("Contenido:", value=st.session_state['borrador_correo'], height=250, key="mail_body")
+            asunto_mail = st.text_input("Asunto:", value="Actualización Urgente - Nexara Finance", key="mail_asunto")
             
-            if st.button("🚀 ENVIAR CORREO REAL AHORA VIA GMAIL API"):
+            if st.button("🚀 ENVIAR CORREO REAL VIA GMAIL", key="btn_send_gmail"):
                 if destinatario:
                     resultado = enviar_correo_real(destinatario, asunto_mail, cuerpo_editado)
                     st.success(resultado)
                 else:
-                    st.warning("Por favor, introduce un correo de destino válido.")
+                    st.warning("Introduce un correo válido.")
 
-# TAB 2: DASHBOARD DE MARKETING PULIDO
+# TAB 2: MARKETING
 with tab2:
-    st.subheader("Generador Estratégico de Contenido (Manual de Marca V2025)")
-    st.info("Recordatorio de marca: Usar tipografía Sora para títulos, Inter para bloques informativos. Enfoque 100% en dolores del emprendedor.")
+    st.subheader("Generador Estratégico de Contenido")
+    canal = st.selectbox("Canal:", ["LinkedIn Corporativo", "Newsletter", "Script Video Corto"], key="mkt_canal")
+    audiencia = st.text_input("Sector Pyme:", value="Logística y Distribución", key="mkt_aud")
     
-    canal = st.selectbox("Selecciona el Canal Objetivo:", ["LinkedIn Corporativo", "Newsletter para Pymes", "Script para Video Corto (Reels/TikTok)"])
-    audiencia_objetivo = st.text_input("Sector de la Pyme objetivo:", value="Empresas de distribución y logística, comercio minorista")
-    
-    if st.button("Estructurar Estrategia de Contenido"):
-        with st.spinner("Analizando pilares de comunicación de Nexara..."):
-            prompt_marketing = f"Genera una pieza de contenido premium para {canal}, dirigida al sector de {audiencia_objetivo}. Destaca los beneficios del Plan A de automatización financiera o el peligro de no tener controlado el flujo de caja diario."
-            
-            # Corrección de los parámetros del sistema en la SDK nueva
-            response_mkt = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents=prompt_marketing,
-                config=types.GenerateContentConfig(
-                    system_instruction=NEXARA_CONTEXT + "\nRegla estricta: Termina siempre el post con una CTA o pregunta sumamente clara enfocada a agendar una auditoría preventiva, tal como exige el manual de marca.",
-                    temperature=0.7
-                )
+    if st.button("Estructurar Estrategia", key="btn_mkt"):
+        with st.spinner("Analizando..."):
+            model = genai.GenerativeModel(
+                model_name='gemini-1.5-flash',
+                system_instruction=NEXARA_CONTEXT + " Termina siempre con un CTA claro para agendar una auditoría preventiva."
             )
-            st.markdown("### 📋 Copy Estratégico Generado")
+            prompt = f"Genera un contenido premium para {canal} enfocado en el sector de {audiencia} sobre la gestión del flujo de caja."
+            response_mkt = model.generate_content(prompt)
+            st.markdown("### Copy Generado")
             st.write(response_mkt.text)
 
-# TAB 3: ORGANIZACIÓN DE REUNIONES
+# TAB 3: REUNIONES
 with tab3:
-    st.subheader("Minutas de Reuniones y Planificación Automatizada")
-    notas_caoticas = st.text_area("Pega aquí tus notas rápidas tomadas durante una reunión o llamada de diagnóstico:")
+    st.subheader("Minutas de Reuniones")
+    notas = st.text_area("Notas rápidas de la reunión:", key="meet_notes")
     
-    if st.button("Procesar Acta de Reunión"):
-        if notas_caoticas:
-            with st.spinner("Estructurando puntos de acción..."):
-                # Corrección de la llamada estructural final
-                response_meet = client.models.generate_content(
-                    model='gemini-2.5-flash',
-                    contents=f"Transforma estas notas en un acta formal de Nexara Finance: {notas_caoticas}",
-                    config=types.GenerateContentConfig(
-                        system_instruction=NEXARA_CONTEXT + "\nOrganiza la salida exactamente en: 1. Puntos Clave Analizados, 2. Decisiones de Control Financiero Tomadas, 3. Tareas Pendientes con Responsables Asignados.",
-                        temperature=0.2
-                    )
+    if st.button("Procesar Acta", key="btn_meet"):
+        if notas:
+            with st.spinner("Estructurando..."):
+                model = genai.GenerativeModel(
+                    model_name='gemini-1.5-flash',
+                    system_instruction=NEXARA_CONTEXT + " Organiza la salida exactamente en: 1. Puntos Clave, 2. Decisiones de Control Tomadas, 3. Tareas Pendientes."
                 )
-                st.markdown("### 📅 Plan de Acción y Siguientes Pasos")
+                response_meet = model.generate_content(f"Estructura estas notas: {notas}")
                 st.info(response_meet.text)
