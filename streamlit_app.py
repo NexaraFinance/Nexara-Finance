@@ -67,7 +67,7 @@ def enviar_correo_real(destinatario: str, asunto: str, cuerpo: str):
         return f"❌ Fallo al enviar el correo a través de la API: {e}"
 
 # --- INTERFAZ DEL DASHBOARD OPERATIVO ---
-st.markdown("<h1 style='color: #185FA5; font-family: Sora, sans-serif;'>Nexara Finance · Centro de Control IA 24/7</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='color: #185FA5; font-family: Sora, sans-serif;'>Nexara Finance · Centro de Control  IA 24/7</h1>", unsafe_allow_html=True)
 st.write("**Usuario Activo:** Gestión Granados | **Estrategia Corporativa Automatizada**")
 
 tab1, tab2, tab3 = st.tabs(["📩 Gestión de Correos Inteligente", "📈 Factoría de Marketing Nexara", "📅 Planificador de Reuniones"])
