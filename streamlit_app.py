@@ -1,32 +1,41 @@
 import streamlit as st
-import google.generativeai as genai
 import os
+# Usamos la librería oficial de Google AI
+from google import genai
 
 # 1. Configuración de página
 st.set_page_config(page_title="Nexara Finance OS", layout="wide")
 
 # 2. Inicialización Crítica
+# Forzamos la lectura directa desde los secretos
 api_key = st.secrets.get("GOOGLE_API_KEY")
+
 if not api_key:
-    st.error("❌ ERROR: GOOGLE_API_KEY no encontrada en los secretos.")
+    st.error("❌ ERROR: No se ha configurado la 'GOOGLE_API_KEY' en los secretos de Streamlit.")
     st.stop()
 
-# Usamos la librería clásica y estable
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Inicializamos el cliente pasando la clave explícitamente para evitar conflictos de autenticación
+try:
+    client = genai.Client(api_key=api_key)
+except Exception as e:
+    st.error(f"❌ Error al inicializar el cliente: {e}")
+    st.stop()
 
-# 3. Motor Autónomo (Backend)
+# 3. Interfaz
+st.title("🤖 Centro de Control Nexara Finance")
+tab1, tab2, tab3 = st.tabs(["📩 Gestión", "📈 Marketing", "📅 Auditoría"])
+
+# Motor autónomo simplificado
 def motor_agente_nexara(tarea, datos):
-    system_instruction = "Eres el Agente Autónomo Nexara. Analiza fugas financieras, redacta propuestas y agenda reuniones. Sé riguroso y resolutivo."
     try:
-        response = model.generate_content(f"{system_instruction}\nTarea: {tarea}\nDatos: {datos}")
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=f"Tarea: {tarea}. Datos: {datos}",
+            config={"system_instruction": "Eres el Agente Autónomo Nexara. Riguroso, directo y resolutivo."}
+        )
         return response.text
     except Exception as e:
         return f"Error en el motor: {str(e)}"
-
-# 4. Interfaz del Centro de Control
-st.markdown("# 🤖 Centro de Control Nexara Finance")
-tab1, tab2, tab3 = st.tabs(["📩 Gestión", "📈 Marketing", "📅 Auditoría"])
 
 with tab1:
     st.subheader("Bandeja de Entrada Autónoma")
