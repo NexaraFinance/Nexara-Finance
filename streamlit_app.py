@@ -1,54 +1,52 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Configuración de página
+# --- CONFIGURACIÓN DE NÚCLEO ---
 st.set_page_config(page_title="Nexara Finance OS", layout="wide")
 
-# Inicialización del modelo (Uso exclusivo de API KEY)
-def init_nexara():
+# Inicialización forzada mediante API KEY exclusivamente
+def conectar_nexara():
     api_key = st.secrets.get("GOOGLE_API_KEY")
     if not api_key:
-        st.error("❌ ERROR: GOOGLE_API_KEY no configurada en los secretos.")
+        st.error("Error: La llave de acceso (API_KEY) no está en los secretos.")
         st.stop()
     genai.configure(api_key=api_key)
-    # Usamos el modelo estándar y estable
+    # Usamos la versión más estable del modelo
     return genai.GenerativeModel('gemini-1.5-flash')
 
-model = init_nexara()
+model = conectar_nexara()
 
-# Esencia de Nexara: Función centralizada de IA
-def motor_agente_nexara(tarea, contenido):
-    system_prompt = """Eres el Asistente Ejecutivo de Nexara Finance (Luz Dalia Granados).
-    Tono: Riguroso, resolutivo y empático.
-    Tu objetivo es analizar datos financieros, redactar propuestas persuasivas y escalar servicios de ahorro fiscal.
-    Responde siempre como un experto en finanzas."""
+# --- LA ESENCIA: AGENTE NEXARA ---
+def agente_nexara(tarea, datos):
+    # La esencia: Luz Dalia Granados, experta en optimización financiera
+    contexto = """Eres el Agente Autónomo de Nexara Finance. 
+    Tu misión: Maximizar la rentabilidad de clientes PYME, detectar fugas de tesorería y escalar servicios. 
+    Tono: Riguroso, humano, resolutivo. Enfócate siempre en el ahorro fiscal y la eficiencia."""
     
     try:
-        response = model.generate_content(f"{system_prompt}\nTarea: {tarea}\nInput: {contenido}")
+        response = model.generate_content(f"{contexto}\n\nTarea: {tarea}\nDatos: {datos}")
         return response.text
     except Exception as e:
         return f"Error en el motor: {str(e)}"
 
-# --- INTERFAZ ---
-st.title("💼 NEXARA FINANCE · Centro de Control")
-tab1, tab2, tab3 = st.tabs(["📩 Gestión de Clientes", "📈 Marketing Estratégico", "📊 Auditoría Preventiva"])
+# --- UI: CENTRO DE CONTROL ---
+st.title("💼 NEXARA FINANCE · Centro de Control Ejecutivo")
 
-with tab1:
+t1, t2, t3 = st.tabs(["📩 Gestión de Clientes", "📈 Marketing Estratégico", "📊 Auditoría Preventiva"])
+
+with t1:
     st.subheader("Bandeja de Entrada Autónoma")
-    cliente_input = st.text_input("Resumen del problema del cliente:")
+    input_cliente = st.text_input("¿Qué comunica el cliente?")
     if st.button("Generar propuesta de rescate"):
-        with st.spinner("Nexara está trabajando..."):
-            st.write(motor_agente_nexara("Redactar correo de propuesta de Plan A", cliente_input))
+        st.write(agente_nexara("Redacta propuesta de Plan A (Ahorro Fiscal)", input_cliente))
 
-with tab2:
+with t2:
     st.subheader("Factoría de Marketing")
-    tema = st.selectbox("Canal:", ["LinkedIn", "Blog Corporativo"])
-    if st.button("Generar contenido"):
-        st.write(motor_agente_nexara(f"Generar post para {tema}", "Enfoque: Ahorro fiscal Pymes y valor de Nexara"))
+    if st.button("Generar Plan de Crecimiento"):
+        st.write(agente_nexara("Crea 5 posts para LinkedIn sobre ahorro fiscal", "Enfoque Nexara"))
 
-with tab3:
-    st.subheader("Auditoría de Fugas")
-    datos_financieros = st.text_area("Pega los datos financieros aquí:")
-    if st.button("Detectar oportunidades de ahorro"):
-        with st.spinner("Auditando..."):
-            st.info(motor_agente_nexara("Analizar datos, detectar fugas financieras y proponer soluciones", datos_financieros))
+with t3:
+    st.subheader("Auditoría Preventiva")
+    notas = st.text_area("Datos de auditoría:")
+    if st.button("Procesar Informe de Fugas"):
+        st.info(agente_nexara("Analiza los datos y detecta fugas de dinero", notas))
