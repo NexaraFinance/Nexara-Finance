@@ -1,55 +1,40 @@
 import streamlit as st
 import google.generativeai as genai
 
-# --- CONFIGURACIÓN E INICIALIZACIÓN ---
 st.set_page_config(page_title="Nexara Finance OS", layout="wide")
 
-# Solo usamos la API KEY, nada de tokens externos
-def init_agent():
-    api_key = st.secrets.get("GOOGLE_API_KEY")
-    if not api_key:
-        st.error("Error: GOOGLE_API_KEY no encontrada en los secretos.")
-        st.stop()
-    genai.configure(api_key=api_key)
-    return genai.GenerativeModel('gemini-1.5-flash')
+# 1. Configuración Estricta (Solo API Key)
+api_key = st.secrets.get("GOOGLE_API_KEY")
+if not api_key:
+    st.error("Configura GOOGLE_API_KEY en los secretos.")
+    st.stop()
 
-model = init_agent()
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Esta es la esencia de Nexara: Riguroso, directo, empático y enfocado en resultados
-NEXARA_IDENTITY = """
-Eres el Asistente Ejecutivo de Nexara Finance, bajo la dirección de Luz Dalia Granados.
-Tu estilo es:
-1. Empático: Entiendes el estrés financiero del cliente.
-2. Riguroso: Hablas con datos, no con promesas vacías.
-3. Directo: Tu objetivo es invitar al cliente a una Auditoría Preventiva o al Plan Avanzado.
-"""
-
-def agente_nexara(tarea, input_usuario):
+# 2. Función de Ejecución Pura
+def procesar_nexara(tarea, datos):
     try:
-        response = model.generate_content(f"{NEXARA_IDENTITY}\nTarea: {tarea}\nInput: {input_usuario}")
+        response = model.generate_content(f"Agente Nexara Finance. Tarea: {tarea}. Datos: {datos}")
         return response.text
     except Exception as e:
-        return f"Error técnico: {str(e)}"
+        return f"Error: {e}"
 
-# --- INTERFAZ ---
-st.title("💼 NEXARA FINANCE · Centro de Control Ejecutivo")
+# 3. Interfaz de Negocio
+st.title("💼 Nexara Finance: Gestión Autónoma")
+tab1, tab2, tab3 = st.tabs(["📩 Gestión", "📈 Marketing", "📊 Auditoría"])
 
-t1, t2, t3 = st.tabs(["📩 Gestión de Clientes", "📈 Marketing Estratégico", "📊 Auditoría Preventiva"])
+with tab1:
+    st.write("Automatización de respuesta a clientes")
+    if st.button("Escanear y Responder"):
+        st.write(procesar_nexara("Redactar email de seguimiento", "Cliente pide info de Plan A"))
 
-with t1:
-    st.subheader("Redacción de Propuestas")
-    email_cliente = st.text_input("¿Qué problema presenta el cliente?")
-    if st.button("Generar propuesta de rescate"):
-        st.write(agente_nexara("Redacta un correo persuasivo para el cliente", email_cliente))
-
-with t2:
-    st.subheader("Contenido de Marca")
-    tema = st.selectbox("Canal:", ["LinkedIn", "Blog Corporativo"])
+with tab2:
+    st.write("Factoría de Marketing")
     if st.button("Generar Post"):
-        st.write(agente_nexara(f"Genera un post para {tema} sobre ahorro fiscal", "Resalta el valor de Nexara"))
+        st.write(procesar_nexara("Crear post de ahorro fiscal", "Enfoque Nexara"))
 
-with t3:
-    st.subheader("Auditoría de Fugas")
-    notas = st.text_area("Pega los datos del cliente aquí:")
-    if st.button("Detectar oportunidades de ahorro"):
-        st.info(agente_nexara("Analiza los datos, detecta fugas y propone soluciones", notas))
+with tab3:
+    st.write("Auditoría de Fugas")
+    if st.button("Detectar Oportunidades"):
+        st.info(procesar_nexara("Analizar fugas financieras", "Gastos operativos altos"))
