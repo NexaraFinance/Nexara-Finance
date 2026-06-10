@@ -1,40 +1,46 @@
 import streamlit as st
 import google.generativeai as genai
 
+# Configuración de página
 st.set_page_config(page_title="Nexara Finance OS", layout="wide")
 
-# 1. Configuración Estricta (Solo API Key)
+# Inicialización Directa
 api_key = st.secrets.get("GOOGLE_API_KEY")
+
 if not api_key:
-    st.error("Configura GOOGLE_API_KEY en los secretos.")
+    st.error("❌ GOOGLE_API_KEY no encontrada en los secretos.")
     st.stop()
 
+# Configuración estricta de la API
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# 2. Función de Ejecución Pura
-def procesar_nexara(tarea, datos):
+def motor_nexara(tarea, datos):
     try:
-        response = model.generate_content(f"Agente Nexara Finance. Tarea: {tarea}. Datos: {datos}")
+        # Instrucción de sistema para mantener la esencia de Nexara
+        prompt = f"""Eres el Asistente Ejecutivo de Nexara Finance. 
+        Tono: Profesional, riguroso, empático. 
+        Objetivo: Detectar fugas financieras y proponer el Plan Avanzado.
+        Tarea: {tarea}. Datos: {datos}"""
+        
+        response = model.generate_content(prompt)
         return response.text
     except Exception as e:
-        return f"Error: {e}"
+        return f"Error en el sistema: {str(e)}"
 
-# 3. Interfaz de Negocio
-st.title("💼 Nexara Finance: Gestión Autónoma")
+# Interfaz
+st.title("💼 NEXARA FINANCE · Centro de Control")
 tab1, tab2, tab3 = st.tabs(["📩 Gestión", "📈 Marketing", "📊 Auditoría"])
 
 with tab1:
-    st.write("Automatización de respuesta a clientes")
     if st.button("Escanear y Responder"):
-        st.write(procesar_nexara("Redactar email de seguimiento", "Cliente pide info de Plan A"))
+        st.write(motor_nexara("Responder a cliente interesado", "El cliente pregunta por el Plan A"))
 
 with tab2:
-    st.write("Factoría de Marketing")
     if st.button("Generar Post"):
-        st.write(procesar_nexara("Crear post de ahorro fiscal", "Enfoque Nexara"))
+        st.write(motor_nexara("Post de LinkedIn sobre ahorro fiscal", "Enfoque Nexara"))
 
 with tab3:
-    st.write("Auditoría de Fugas")
-    if st.button("Detectar Oportunidades"):
-        st.info(procesar_nexara("Analizar fugas financieras", "Gastos operativos altos"))
+    notas = st.text_area("Datos para auditar:")
+    if st.button("Procesar"):
+        st.info(motor_nexara("Detectar fugas", notas))
