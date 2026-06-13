@@ -512,6 +512,12 @@ function handleSubmit() {
     btn.disabled = false;
   });
 }
+import streamlit as st
+
+# Configuración de verificación de AdSense
+st.markdown("""
+    <meta name="google-adsense-account" content="ca-pub-8835866419443816">
+""", unsafe_allow_html=True)
 </script>
 
 </body>
